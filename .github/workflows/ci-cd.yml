@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean
 on:
   pull_request:
     branches:
-      - test
+      - dev
 
 jobs:
   build:
