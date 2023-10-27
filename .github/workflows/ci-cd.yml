@@ -13,38 +13,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install doctl
-        run: |
-          sudo snap install doctl
-          sudo snap connect doctl:dot-docker
+      # - name: Install doctl
+      #   run: |
+      #     sudo snap install doctl
+      #     sudo snap connect doctl:dot-docker
 
-      - name: Login to DigitalOcean Registry
-        run: |
-          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-          doctl registry login
+      # - name: Login to DigitalOcean Registry
+      #   run: |
+      #     doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      #     doctl registry login
 
-      - name: Install dependencies and Build the project
-        run: |
-          npm install -g @nestjs/cli
-          npm install
-          npm run build
+      # - name: Install dependencies and Build the project
+      #   run: |
+      #     npm install -g @nestjs/cli
+      #     npm install
+      #     npm run build
 
-      - name: Remove existing Docker image from DigitalOcean Registry
-        run: docker rmi ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest || true
+      # - name: Remove existing Docker image from DigitalOcean Registry
+      #   run: docker rmi ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest || true
 
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t task-manager-api:latest .
-          docker tag task-manager-api:latest ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
-          docker push ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
+      # - name: Build and Push Docker Image
+      #   run: |
+      #     docker build -t task-manager-api:latest .
+      #     docker tag task-manager-api:latest ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
+      #     docker push ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
     
-      - name: Add host key to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          ssh-keyscan -H 46.101.99.50 >> ~/.ssh/known_hosts
-        env:
-          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+      # - name: Add host key to known_hosts
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     touch ~/.ssh/known_hosts
+      #     ssh-keyscan -H 46.101.99.50 >> ~/.ssh/known_hosts
+      #   env:
+      #     DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
 
       - name: Deploy to DigitalOcean Droplet
         run: |
