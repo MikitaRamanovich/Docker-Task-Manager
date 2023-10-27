@@ -1,0 +1,39 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        run: |
+          sudo snap install doctl
+          sudo snap connect doctl:dot-docker
+
+      - name: Login to DigitalOcean Registry
+        run: |
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl registry login
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t task-manager-api:latest .
+          docker tag task-manager-api:latest ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
+          docker push ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest
+
+      - name: Deploy to DigitalOcean Droplet
+        run: |
+          ssh user@your-droplet-ip "docker login ${{ secrets.DIGITALOCEAN_REGISTRY_URL }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
+          ssh user@your-droplet-ip "docker pull ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest"
+          ssh user@your-droplet-ip "docker stop my-app || true"
+          ssh user@your-droplet-ip "docker rm my-app || true"
+          ssh user@your-droplet-ip "docker run -d --name my-app -p 80:80 ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest"
+
