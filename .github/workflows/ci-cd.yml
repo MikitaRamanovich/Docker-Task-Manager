@@ -17,12 +17,13 @@ jobs:
         run: |
           sudo snap install doctl
           sudo snap connect doctl:dot-docker
+
+      - name: Login to DigitalOcean Registry
+        run: |
+          doctl registry login
           doctl auth init --context digitaloceanregistry --access-token dop_v1_365323af556f958f9636b1f726ad2237474cc201269c60e96cd0b0539f85466a
           doctl auth list
           doctl auth switch --context digitaloceanregistry
-        
-      - name: Login to DigitalOcean Registry
-        run: doctl registry login
         
       - name: Build and Push Docker Image
         run: |
