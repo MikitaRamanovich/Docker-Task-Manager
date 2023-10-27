@@ -23,6 +23,8 @@ jobs:
           doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           doctl registry login
 
+      - name: Build the project
+        run: npm run build
 
       - name: Build and Push Docker Image
         run: |
