@@ -25,7 +25,6 @@ jobs:
           doctl auth switch --context digitaloceanregistry
           doctl registry login
 
-        
       - name: Build and Push Docker Image
         run: |
           docker build -t my-app:latest .
