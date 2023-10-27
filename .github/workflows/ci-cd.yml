@@ -20,7 +20,9 @@ jobs:
 
       - name: Login to DigitalOcean Registry
         run: |
-          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} 
+          doctl auth init --context digitaloceanregistry --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl auth list
+          doctl auth switch --context digitaloceanregistry
           doctl registry login
 
       - name: Build and Push Docker Image
