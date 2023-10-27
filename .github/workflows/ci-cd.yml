@@ -20,7 +20,7 @@ jobs:
 
       - name: Login to DigitalOcean Registry
         run: |
-          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} --context digitaloceanregistry
           doctl auth list
           doctl auth switch --context digitaloceanregistry
           doctl registry login
