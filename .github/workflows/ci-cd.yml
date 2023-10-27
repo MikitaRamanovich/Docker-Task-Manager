@@ -23,6 +23,7 @@ jobs:
           doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           doctl registry login
 
+
       - name: Build and Push Docker Image
         run: |
           docker build -t task-manager-api:latest .
