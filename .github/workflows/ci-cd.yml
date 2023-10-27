@@ -13,21 +13,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Install doctl
-      #   run: |
-      #     sudo snap install doctl
-      #     sudo snap connect doctl:dot-docker
+      - name: Install doctl
+        run: |
+          sudo snap install doctl
+          sudo snap connect doctl:dot-docker
 
-      # - name: Login to DigitalOcean Registry
-      #   run: |
-      #     doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      #     doctl registry login
+      - name: Login to DigitalOcean Registry
+        run: |
+          doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          doctl registry login
 
       # - name: Install dependencies and Build the project
       #   run: |
       #     npm install -g @nestjs/cli
       #     npm install
       #     npm run build
+
+      # - name: Remove existing Docker image from DigitalOcean Registry
+      #   run: docker rmi ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest || true
 
       # - name: Build and Push Docker Image
       #   run: |
