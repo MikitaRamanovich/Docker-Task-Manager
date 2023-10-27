@@ -1,1 +1,32 @@
+name: Deploy to DigitalOcean
+
+on:
+  pull_request:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to DigitalOcean Registry
+        run: doctl registry login
+        
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t my-app:latest .
+          docker tag my-app:latest ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest
+          docker push ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest
+
+      - name: Deploy to DigitalOcean Droplet
+        run: |
+          ssh user@your-droplet-ip "docker login ${{ secrets.DIGITALOCEAN_REGISTRY_URL }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}"
+          ssh user@your-droplet-ip "docker pull ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest"
+          ssh user@your-droplet-ip "docker stop my-app || true"
+          ssh user@your-droplet-ip "docker rm my-app || true"
+          ssh user@your-droplet-ip "docker run -d --name my-app -p 80:80 ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/my-app:latest"
 
