@@ -24,7 +24,9 @@ jobs:
           doctl registry login
 
       - name: Build the project
-        run: npm run build
+        run: |
+          npm install -g @nestjs/cli
+          npm run build
 
       - name: Build and Push Docker Image
         run: |
