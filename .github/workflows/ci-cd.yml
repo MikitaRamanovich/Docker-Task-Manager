@@ -23,7 +23,6 @@ jobs:
         
       - name: Login to DigitalOcean Registry
         run: doctl registry login
-
         
       - name: Build and Push Docker Image
         run: |
