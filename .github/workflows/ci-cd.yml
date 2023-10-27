@@ -37,9 +37,11 @@ jobs:
 
       - name: Deploy to DigitalOcean Droplet
         run: |
-          ssh root@46.101.99.50 "doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
-          ssh root@46.101.99.50 "docker pull ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
-          ssh root@46.101.99.50 "docker stop task-manager-api || true"
-          ssh root@46.101.99.50 "docker rm task-manager-api || true"
-          ssh root@46.101.99.50 "docker run -d --name task-manager-api -p 80:80 ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
-
+          echo "$DEPLOY_SSH_PRIVATE_KEY" > ssh_key.pem
+          chmod 600 ssh_key.pem
+          ssh -i ssh_key.pem root@46.101.99.50 "docker pull ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
+          ssh -i ssh_key.pem root@46.101.99.50 "docker stop task-manager-api || true"
+          ssh -i ssh_key.pem root@46.101.99.50 "docker rm task-manager-api || true"
+          ssh -i ssh_key.pem root@46.101.99.50 "docker run -d --name task-manager-api -p 80:80 ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
+        env:
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
