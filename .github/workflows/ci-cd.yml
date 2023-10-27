@@ -35,5 +35,11 @@ jobs:
           docker tag task-manager-api:latest ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
           docker push ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest
 
-
+      - name: Deploy to DigitalOcean Droplet
+        run: |
+          ssh root@46.101.99.50 "doctl auth init --access-token ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}"
+          ssh root@46.101.99.50 "docker pull ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
+          ssh root@46.101.99.50 "docker stop task-manager-api || true"
+          ssh root@46.101.99.50 "docker rm task-manager-api || true"
+          ssh root@46.101.99.50 "docker run -d --name task-manager-api -p 80:80 ${{ secrets.DIGITALOCEAN_REGISTRY_URL }}/task-manager-api:latest"
 
